@@ -1,55 +1,31 @@
-import React from 'react';
-import './App.css';
+import React, { useState } from 'react';
+import reducer, { listFilter } from './components/store';
+import ToDoForm from './components/TodoForm/ToDoForm';
+import TodoList from './components/TodoList/TodoList';
 
-function App() {
-  return (
-    <div className="wrapper">
-      <div>
-        <h1>Список дел</h1>
-        <h2>Лабораторная №4. Осваиваем Redux</h2>
-      </div>
-      <div>
-        <input type="text" />
-        <button>Добавить</button>
+export default function App() {
+    const [tasks, setTasks] = useState([]);
+    const [isChecked, setIsChecked] = useState(false);
+
+    function dispatch(action) {
+        const newTasks = reducer(action, tasks);
+        setTasks(newTasks);
+    }
+    function handleCheck() {
+        setIsChecked(isChecked);
+    }
+
+    return (
         <div>
-          Фильтр:
-          <input />
-          <select>
-            <option>Все</option>
-            <option>Выполненные</option>
-            <option>Невыполненные</option>
-          </select>
+            <div>
+                <h1>Список дел</h1>
+                <h2>Лабораторная №3. Список с фильтрацией</h2>
+            </div>
+            <ToDoForm dispatch={dispatch} handleClick={handleCheck} isChecked={isChecked} />
+            <span> Show only checked </span>
+            <input type="checkbox" checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
+            <br />
+            <TodoList tasks={listFilter({ tasks, isChecked })} dispatch={dispatch} />
         </div>
-        <ul>
-          <li>
-            <input type="checkbox" checked />
-            Завести рыб
-            <button>[x]</button>
-          </li>
-          <li>
-            <input type="checkbox" checked />
-            Поиграть в шахматы под водой
-            <button>[x]</button>
-          </li>
-          <li>
-            <input type="checkbox" />
-            Покормить рыб
-            <button>[x]</button>
-          </li>
-          <li>
-            <input type="checkbox" />
-            Выгулять картошку
-            <button>[x]</button>
-          </li>
-          <li>
-            <input type="checkbox" />
-            Полить кошку
-            <button>[x]</button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  );
+    );
 }
-
-export default App;
